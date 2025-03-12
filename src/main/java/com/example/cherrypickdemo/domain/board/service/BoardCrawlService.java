@@ -62,7 +62,7 @@ public class BoardCrawlService {
 
             // GPT 응답이 유추 불가인 경우 저장 안 함
             if (response.contains("유추 불가")) {
-                System.out.println("GPT 응답에 '유추 불가'가 포함되어 저장하지 않습니다: " + title);
+                // System.out.println("GPT 응답에 '유추 불가'가 포함되어 저장하지 않습니다: " + title);
                 continue;
             }
 
@@ -126,7 +126,7 @@ public class BoardCrawlService {
                 JsonNode rootNode = objectMapper.readTree(response);
                 String content = rootNode.path("choices").get(0).path("message").path("content").asText();
 
-                System.out.println("GPT Content: " + content); // 디버깅용 출력
+                // System.out.println("GPT Content: " + content);
 
                 return content;
             } else {
