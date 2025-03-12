@@ -35,7 +35,7 @@ public class BoardCrawlService {
     private final UserRepository userRepository;
     private final HashTagRepository hashTagRepository;
 
-        @Value("${openai.api-key}")
+    @Value("${openai.api-key}")
     private String openAiApiKey;
 
     @Value("${openai.api-url}")
@@ -47,12 +47,10 @@ public class BoardCrawlService {
 
         Elements rows = document.select("tr.baseList.bbs_new1");
 
-        List<String> forbiddenWords = List.of("다양", "가격다양", "가격 다양");
+        List<String> forbiddenWords = List.of("다양", "가격다양", "가격 다양", "본문참조", "참조");
 
         int count = 0;
         for (Element row : rows) {
-            if (count >= 100) break;
-            count++;
 
             String title = row.select(".baseList-title span").text();
 
@@ -97,11 +95,11 @@ public class BoardCrawlService {
     private String getChatGPTResponse(String title) {
         RestTemplate restTemplate = new RestTemplate();
 
-        String prompt = title + "\n 이 제목을 보고 가격과 해시태그 5개를 뽑아줘. 무조건 다음 형식을 지켜서 답해줘. 가격:10000, 해시태그: 과일, 식품, 사과, 유기농. 만약 가격이나 해시태그를 정확히 알아내기 힘든 제목이라면 정확히 '유추 불가'라고 말해줘.";
+        String prompt = title + "\n 이 제목을 보고 가격과 해시태그 20개를 뽑아줘. 해시태그엔 # 표시를 붙이지말고 단어만 쉼표로 구분해서 보내줘. 예시를 보여줄게, 무조건 다음 형식을 지켜서 답해줘. 가격:10000, 해시태그: 과일, 식품, 사과, 유기농. 만약 가격이나 해시태그를 정확히 알아내기 힘든 제목이라면 정확히 '유추 불가'라고 말해줘.";
 
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("model", "gpt-3.5-turbo");
-        requestMap.put("max_tokens", 100);
+        requestMap.put("max_tokens", 200);
         requestMap.put("messages", List.of(Map.of("role", "user", "content", prompt)));
 
         ObjectMapper objectMapper = new ObjectMapper();

@@ -37,13 +37,9 @@ public class BoardController {
     // 크롤링 API
     @GetMapping("/crawl-board")
     public String crawlBoard() {
-
-        String[] urls = {
-                "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=1"
-        };
-
         try {
-            for (String url : urls) {
+            for (int i = 51; i <= 53; i++) {
+                String url = "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=" + i;
                 boardCrawlService.crawlAndSaveBoard(url);
             }
             return "게시글 크롤링 및 저장 완료";
