@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class BoardCrawlService {
@@ -50,30 +52,22 @@ public class BoardCrawlService {
                 continue;
             }
 
-            String content = "내용";
-            int price = 10000;
+            // 챗GPT에게 타이틀을 전달해서 가격과 해시태그 추출하는 로직 (가정)
+            // 예시: 응답받은 데이터 -> "10000/건강식품,저칼로리,저당,탄산수,다이어트"
+            String response = "999/건강식품,저칼로리,저당,탄산수,다이어트";  // 예시
 
-            Optional<HashTag> existingTagOpt = hashTagRepository.findByTagName("해시태그");
-            HashTag existingTag;
-            if (existingTagOpt.isPresent()) {
-                existingTag = existingTagOpt.get();
-            } else {
-                HashTag dummyTag = new HashTag();
-                dummyTag.setTagName("해시태그");
-                hashTagRepository.save(dummyTag);
-                existingTag = dummyTag;
-            }
-
-            Set<HashTag> hashTags = new HashSet<>();
-            hashTags.add(existingTag);
+            // 가격과 해시태그 추출
+            int price = extractPrice(response);  // 가격 추출
+            Set<HashTag> hashTags = extractHashTags(response);  // 해시태그 추출
 
             User dummyUser = userRepository.findById(1L).orElse(null);
 
+            // Board 엔티티 생성 및 저장
             Board board = new Board();
             board.setTitle(title);
-            board.setContent(content);
-            board.setPrice(price);
-            board.setHashTags(hashTags);
+            board.setContent("내용");
+            board.setPrice(price);  // 가격 저장
+            board.setHashTags(hashTags);  // 해시태그 저장
             board.setUser(dummyUser);
 
             boardRepository.save(board);
@@ -87,5 +81,42 @@ public class BoardCrawlService {
             }
         }
         return false;
+    }
+
+    // 정규 표현식으로 가격 추출
+    private int extractPrice(String response) {
+        Pattern pattern = Pattern.compile("^(\\d+)");  // 가격은 첫 번째 숫자
+        Matcher matcher = pattern.matcher(response);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1));  // 가격을 반환
+        }
+        return 0;
+    }
+
+    // 정규 표현식으로 해시태그 추출
+    private Set<HashTag> extractHashTags(String response) {
+        Set<HashTag> hashTags = new HashSet<>();
+
+        // 가격 뒤의 '/' 이후에 해시태그가 오는 부분을 추출
+        String tagsPart = response.split("/")[1];  // "건강식품,저칼로리,저당,탄산수,다이어트"
+
+        Pattern pattern = Pattern.compile("([\\w가-힣]+)");  // 해시태그는 알파벳, 숫자, 한글로 구성
+        Matcher matcher = pattern.matcher(tagsPart);
+
+        while (matcher.find()) {
+            String tagName = matcher.group(1);
+            Optional<HashTag> existingTagOpt = hashTagRepository.findByTagName(tagName);
+            HashTag existingTag;
+            if (existingTagOpt.isPresent()) {
+                existingTag = existingTagOpt.get();
+            } else {
+                HashTag newTag = new HashTag();
+                newTag.setTagName(tagName);
+                hashTagRepository.save(newTag);
+                existingTag = newTag;
+            }
+            hashTags.add(existingTag);  // 해시태그 추가
+        }
+        return hashTags;
     }
 }

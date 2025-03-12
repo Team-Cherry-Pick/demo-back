@@ -41,10 +41,7 @@ public class BoardController {
     public String crawlBoard() {
 
         String[] urls = {
-                "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=1",
-                "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=2&divpage=99",
-                "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=3&divpage=99",
-                "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=4&divpage=99",
+                "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=5"
         };
 
         try {
