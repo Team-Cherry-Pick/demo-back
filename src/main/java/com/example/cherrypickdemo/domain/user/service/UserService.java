@@ -2,14 +2,14 @@ package com.example.cherrypickdemo.domain.user.service;
 
 import com.example.cherrypickdemo.domain.user.entity.User;
 import com.example.cherrypickdemo.domain.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     // 회원가입
     public String signup(String username, String password) {

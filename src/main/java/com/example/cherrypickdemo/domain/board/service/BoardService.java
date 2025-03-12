@@ -8,7 +8,7 @@ import com.example.cherrypickdemo.domain.hashtag.repository.HashTagRepository;
 import com.example.cherrypickdemo.domain.user.entity.User;
 import com.example.cherrypickdemo.domain.user.repository.UserRepository;
 import com.example.cherrypickdemo.domain.board.repository.BoardRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,16 +19,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class BoardService {
 
-    @Autowired
-    private BoardRepository boardRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private HashTagRepository hashTagRepository;
+    private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
+    private final HashTagRepository hashTagRepository;
 
     // 게시판 생성
     public ResponseEntity<?> createBoard(BoardRequest boardRequest) {

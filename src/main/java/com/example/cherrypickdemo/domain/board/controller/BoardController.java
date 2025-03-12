@@ -4,20 +4,18 @@ import com.example.cherrypickdemo.domain.board.dto.request.BoardRequest;
 import com.example.cherrypickdemo.domain.board.dto.response.BoardResponse;
 import com.example.cherrypickdemo.domain.board.service.BoardCrawlService;
 import com.example.cherrypickdemo.domain.board.service.BoardService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/board")
 public class BoardController {
 
-    @Autowired
-    private BoardService boardService;
-
-    @Autowired
-    private BoardCrawlService boardCrawlService;
+    private final BoardService boardService;
+    private final BoardCrawlService boardCrawlService;
 
     // 게시글 생성 API
     @PostMapping("/create")
@@ -32,7 +30,7 @@ public class BoardController {
             BoardResponse response = boardService.getBoardDetails(boardId);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BoardResponse());  // 게시글 없을 경우 404 반환
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BoardResponse());
         }
     }
 
@@ -41,7 +39,7 @@ public class BoardController {
     public String crawlBoard() {
 
         String[] urls = {
-                "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=5"
+                "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=1"
         };
 
         try {
