@@ -1,6 +1,7 @@
 package com.example.cherrypickdemo.domain.board.controller;
 
 import com.example.cherrypickdemo.domain.board.dto.request.BoardRequest;
+import com.example.cherrypickdemo.domain.board.dto.response.BoardListResponse;
 import com.example.cherrypickdemo.domain.board.dto.response.BoardResponse;
 import com.example.cherrypickdemo.domain.board.service.BoardCrawlService;
 import com.example.cherrypickdemo.domain.board.service.BoardService;
@@ -21,6 +22,13 @@ public class BoardController {
     @PostMapping("/create")
     public ResponseEntity<?> createBoard(@RequestBody BoardRequest boardRequest) {
         return boardService.createBoard(boardRequest);
+    }
+
+    // 게시글 전체 조회 API
+    @GetMapping("/list")
+    public ResponseEntity<BoardListResponse> getBoardList(@RequestParam int page) {
+        BoardListResponse response = boardService.getAllBoards(page);
+        return ResponseEntity.ok(response);
     }
 
     // 게시글 상세 조회 API

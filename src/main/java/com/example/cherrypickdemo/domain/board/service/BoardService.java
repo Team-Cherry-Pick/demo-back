@@ -1,6 +1,7 @@
 package com.example.cherrypickdemo.domain.board.service;
 
 import com.example.cherrypickdemo.domain.board.dto.request.BoardRequest;
+import com.example.cherrypickdemo.domain.board.dto.response.BoardListResponse;
 import com.example.cherrypickdemo.domain.board.dto.response.BoardResponse;
 import com.example.cherrypickdemo.domain.board.entity.Board;
 import com.example.cherrypickdemo.domain.hashtag.entity.HashTag;
@@ -9,13 +10,14 @@ import com.example.cherrypickdemo.domain.user.entity.User;
 import com.example.cherrypickdemo.domain.user.repository.UserRepository;
 import com.example.cherrypickdemo.domain.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,6 +64,40 @@ public class BoardService {
         boardRepository.save(board);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("{\"message\":\"게시글 생성 성공\"}");
+    }
+
+    // 게시글 전체 조회 (10개씩 고정)
+    public BoardListResponse getAllBoards(int page) {
+        int pageSize = 10; // 한 페이지에 10개씩 고정
+        Pageable pageable = PageRequest.of(page - 1, pageSize);  // 페이지 번호를 1부터 받으므로 -1 처리
+        Page<Board> boardPage = boardRepository.findAll(pageable);
+
+        // BoardResponse로 변환
+        List<BoardResponse> boardResponses = boardPage.getContent().stream()
+                .map(board -> {
+                    BoardResponse response = new BoardResponse();
+                    response.setBoardId(board.getBoardId());
+                    response.setTitle(board.getTitle());
+                    response.setContent(board.getContent());
+                    response.setPrice(board.getPrice());
+                    response.setUsername(board.getUser().getUsername());
+                    response.setTags(board.getHashTags().stream()
+                            .map(HashTag::getTagName)
+                            .collect(Collectors.toSet()));
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        // BoardListResponse 객체 생성 및 반환
+        BoardListResponse response = new BoardListResponse();
+        response.setTotalCount(boardPage.getNumberOfElements());  // 이번 페이지에서 조회된 데이터 개수
+        response.setContent(boardResponses);  // 게시글 목록
+        response.setFirst(boardPage.isFirst());  // 첫 페이지 여부
+        response.setLast(boardPage.isLast());  // 마지막 페이지 여부
+        response.setHasNext(boardPage.hasNext());  // 다음 페이지 여부
+        response.setHasPrevious(boardPage.hasPrevious());  // 이전 페이지 여부
+
+        return response;
     }
 
     // 게시글 상세 조회
