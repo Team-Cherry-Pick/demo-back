@@ -16,6 +16,7 @@ public class HashTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int tagId;
 
+    @Column(columnDefinition = "TEXT")
     private String tagName;
 
     @ManyToMany(mappedBy = "hashTags")

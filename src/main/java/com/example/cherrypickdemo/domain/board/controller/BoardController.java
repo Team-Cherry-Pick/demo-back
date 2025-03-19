@@ -46,7 +46,7 @@ public class BoardController {
     @GetMapping("/crawl-board")
     public String crawlBoard() {
         try {
-            for (int i = 51; i <= 53; i++) {
+            for (int i = 1; i <= 53; i++) {
                 String url = "https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&page=" + i;
                 boardCrawlService.crawlAndSaveBoard(url);
             }
