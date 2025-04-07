@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<label>유저번호</label> <input id="user_id">
+<label>상품번호</label> <input id="board_id"> <button onclick="logCreate('VIEW')">조회</button><button onclick="logCreate('RECOMMEND')">추천</button><button onclick="logCreate('PURCHASE')">구매</button>
+
+<script>
+    var data  = {
+        userId : $("#user_id").val(),
+            boardId : $("#board_id").val(),
+            method : method
+    };
+    console.log(data);
+    function logCreate(method)
+    {
+        $.ajax({
+            url:"http://localhost:8080/user/1/logs",
+            type: 'POST',
+            dataType: 'json',
+            data : {
+                userId : $("#user_id").val(),
+                boardId : $("#board_id").val(),
+                method : method
+            },
+            success: function(response) {
+                // 서버 응답이 성공적으로 왔을 때 처리할 내용
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                // 요청 실패 시 처리할 내용
+                console.error('Error:', error);
+            }
+        })
+
+    }
+
+
+
+</script>
+
+</body>
+</html>

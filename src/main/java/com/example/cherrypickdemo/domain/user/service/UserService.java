@@ -1,12 +1,14 @@
 package com.example.cherrypickdemo.domain.user.service;
 
+import com.example.cherrypickdemo.domain.user.dto.request.UserDetailResponse;
 import com.example.cherrypickdemo.domain.user.entity.User;
 import com.example.cherrypickdemo.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -38,5 +40,14 @@ public class UserService {
         }
 
         return "잘못된 비밀번호입니다.";
+    }
+
+    // 유저 상세 조회
+    public UserDetailResponse getUserDetail(Integer userId)
+    {
+        var user = UserDetailResponse.of(userRepository.findById(userId.longValue()).get());
+        log.info("유저 조회 {}", user.toString());
+
+        return user;
     }
 }

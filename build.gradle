@@ -28,6 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-json'
     implementation 'org.jsoup:jsoup:1.15.4'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
@@ -35,6 +36,10 @@ dependencies {
 
     // MySQL Driver
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // redis lettuce
+    implementation'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     // Spring Boot Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -5,6 +5,7 @@ import com.example.cherrypickdemo.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashMap;
 import java.util.Set;
 
 @Entity
@@ -31,4 +32,5 @@ public class Board {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
 }
